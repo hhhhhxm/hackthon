@@ -5,7 +5,7 @@ server:
 spring:
   #mysql连接
   datasource:
-    url: jdbc:mysql://150.158.33.124:3306/faqdb?characterEncoding=utf8&serverTimezone=UTC
+    url: jdbc:mysql://xxxx.xxx.xx.xxx:3306/faqdb?characterEncoding=utf8&serverTimezone=UTC
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -28,7 +28,7 @@ spring:
     throw-exception-if-no-handler-found: true
   #redis连接
   redis:
-    host: 150.158.33.124
+    host: xxx.xxx.xx.xx
     port: 6379
     database: 6
     jedis:
@@ -42,7 +42,7 @@ spring:
 
 #es连接
 elasticsearch:
-  host: 150.158.33.124
+  host: xxxx.xxxx.xxxx.xxxx
   port: 9200
 
 

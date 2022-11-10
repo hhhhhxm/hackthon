@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.kezaihui.faq.entity.FaqPair;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 /**
@@ -14,7 +13,8 @@ import java.util.List;
  */
 @Repository
 @Mapper
-public interface FaqPairDao  extends BaseMapper<FaqPair> {
-
+public interface FaqPairDao extends BaseMapper<FaqPair> {
     List<FaqPair> listAll();
+
+    FaqPair getDetail(Integer qaId);
 }

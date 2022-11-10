@@ -3,8 +3,6 @@ package com.kezaihui.faq.controller;
 import com.kezaihui.faq.config.RetrievalConfig;
 import com.kezaihui.faq.response.CommonReturnType;
 import com.kezaihui.faq.service.ManagementService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
@@ -17,7 +15,6 @@ import java.io.IOException;
  * @CreateDate: 2022/03/31
  * @Description
  */
-@Api(tags = "管理")
 @RestController
 @RequestMapping("/management")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")   //处理跨域请求
@@ -34,7 +31,6 @@ public class ManagementController {
     /**
      * 全量同步，将mysql中的faq_pair表全部同步到redis中
      */
-    @ApiOperation("全量同步")
     @RequestMapping(value = "/total_synchronize", method = RequestMethod.GET)
     public CommonReturnType totalSynchronize() throws IOException {
 
@@ -59,7 +55,6 @@ public class ManagementController {
     }
 
 
-    @ApiOperation("更新多轮问答树")
     @RequestMapping(value = "/update_multi_turn_qa_tree", method = RequestMethod.GET)
     public CommonReturnType updateMultiRoundQATree() {
         int account = managementService.updateMultiTree();

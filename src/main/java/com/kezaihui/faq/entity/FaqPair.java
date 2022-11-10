@@ -1,10 +1,7 @@
 package com.kezaihui.faq.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kezaihui.faq.emum.DataType;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,7 +11,6 @@ import java.time.LocalDateTime;
  * @CreateDate: 2022/03/31
  * @Description 对应数据表：faq_pair
  */
-@ApiModel("FAQ问答对：标准问-标准答")
 @Data
 @TableName("faq_pair")
 public class FaqPair {

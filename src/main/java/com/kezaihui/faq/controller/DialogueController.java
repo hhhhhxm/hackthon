@@ -8,11 +8,7 @@ import com.kezaihui.faq.entity.FaqPair;
 import com.kezaihui.faq.response.CommonReturnType;
 import com.kezaihui.faq.response.ResultData;
 import com.kezaihui.faq.service.DialogueService;
-import com.kezaihui.faq.util.RedisUtil;
 import com.kezaihui.faq.vo.AnswerResultVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +23,6 @@ import java.util.List;
  * @CreateDate: 2021/01/17
  * @Description
  */
-@Api(tags = "对话")
 @RestController
 @RequestMapping("/dialogue")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")   //处理跨域请求
@@ -39,17 +34,14 @@ public class DialogueController {
     @Autowired
     private DialogueService dialogueService;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Autowired
     private FaqPairDao faqPairDao;
 
-    @ApiOperation("提问问题")
     @RequestMapping(value = "/ask", method = RequestMethod.GET)
     public CommonReturnType ask(
-            @ApiParam("用户问题") @RequestParam(name = "question") String question,
-            @ApiParam("用户id") @RequestParam(name = "user_id") Integer userId) throws IOException {
+            @RequestParam(name = "question") String question,
+            @RequestParam(name = "user_id") Integer userId) throws IOException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -70,12 +62,11 @@ public class DialogueController {
     }
 
 
-    @ApiOperation("提问问题")
     @RequestMapping(value = "/ask2", method = RequestMethod.GET)
     @ResponseBody
     public ResultData ask2(
-            @ApiParam("用户问题") @RequestParam(name = "question") String question,
-            @ApiParam("用户id") @RequestParam(name = "user_id") Integer userId) throws IOException {
+            @RequestParam(name = "question") String question,
+            @RequestParam(name = "user_id") Integer userId) throws IOException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 

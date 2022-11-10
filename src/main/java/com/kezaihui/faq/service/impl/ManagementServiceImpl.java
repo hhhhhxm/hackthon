@@ -8,7 +8,6 @@ import com.kezaihui.faq.dao.FaqPairDao;
 import com.kezaihui.faq.dataObject.MultiQaTreeNode;
 import com.kezaihui.faq.entity.FaqPair;
 import com.kezaihui.faq.service.ManagementService;
-import com.kezaihui.faq.util.RedisUtil;
 import com.kezaihui.faq.util.RestClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -56,8 +55,6 @@ public class ManagementServiceImpl implements ManagementService {
     @Autowired
     private RestClientUtil restClientUtil;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public int totalSynchronize(String tableIndexName) throws IOException {
@@ -154,12 +151,8 @@ public class ManagementServiceImpl implements ManagementService {
             }
             int qaId = node.getQaId();
             question2id.put(node.getQuestion(), qaId);
-            //设置多轮问答树的qaId的为key
-            redisUtil.set(dialogueConfig.getMQATreeKeyPrefix() + qaId, node);
             accout++;
         }
-
-        redisUtil.set(dialogueConfig.getMQAQuestion2idKey(), question2id);
 
         //返回更新的多轮问答树的总数
         log.info("已更新{}个多轮问答树到redis中", accout);

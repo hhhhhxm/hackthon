@@ -28,15 +28,10 @@ import java.util.List;
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")   //处理跨域请求
 @Slf4j
 public class DialogueController {
-    @Autowired
-    private DialogueConfig dialogueConfig;
 
     @Autowired
     private DialogueService dialogueService;
 
-
-    @Autowired
-    private FaqPairDao faqPairDao;
 
     /*@RequestMapping(value = "/ask", method = RequestMethod.GET)
     public CommonReturnType ask(

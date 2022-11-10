@@ -1,16 +1,9 @@
 package com.kezaihui.faq.controller;
 
-import com.kezaihui.faq.config.DialogueConfig;
-import com.kezaihui.faq.controller.viewObject.DialogueResultVO;
-import com.kezaihui.faq.dao.FaqPairDao;
-import com.kezaihui.faq.dataObject.DialogueStatus;
-import com.kezaihui.faq.entity.FaqPair;
-import com.kezaihui.faq.response.CommonReturnType;
 import com.kezaihui.faq.response.ResultData;
 import com.kezaihui.faq.service.DialogueService;
 import com.kezaihui.faq.vo.AnswerResultVo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;

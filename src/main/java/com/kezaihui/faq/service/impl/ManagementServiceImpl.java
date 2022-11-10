@@ -197,6 +197,21 @@ public class ManagementServiceImpl implements ManagementService {
         }
     }
 
+    @Override
+    public void addFaqPair(FaqPair faqPair) {
+        checkAddParams(faqPair);
+        faqPairDao.insert(faqPair);
+    }
+
+    @Override
+    public void deleteFaqPair(Integer id) {
+        faqPairDao.deleteById(id);
+    }
+
+    private void checkAddParams(FaqPair faqPair) {
+
+    }
+
     /**
      * 读取保存常用esAPI的json文件
      *

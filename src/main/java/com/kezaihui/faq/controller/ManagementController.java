@@ -1,14 +1,20 @@
 package com.kezaihui.faq.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kezaihui.faq.config.RetrievalConfig;
+import com.kezaihui.faq.entity.FaqPair;
 import com.kezaihui.faq.response.CommonReturnType;
+import com.kezaihui.faq.response.ResultData;
 import com.kezaihui.faq.service.ManagementService;
+import com.kezaihui.faq.vo.QuestionListVo;
+import com.kezaihui.faq.vo.QuestionVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Author: lerry_li
@@ -62,5 +68,18 @@ public class ManagementController {
             return CommonReturnType.failed(null);
         }
         return CommonReturnType.success(String.format("成功更新%d个多轮问答树到redis", account));
+    }
+
+    @GetMapping("/list")
+    public ResultData<List<FaqPair>> list(QuestionListVo questionListVo) {
+        Page<FaqPair> faqPairPage = managementService.page(questionListVo);
+        return ResultData.<List<FaqPair>>success().data(faqPairPage.getRecords()).totalCount((int) faqPairPage.getTotal()).build();
+    }
+
+
+    @PutMapping("/{qaId}")
+    public ResultData update(@RequestBody QuestionVo questionVo, @PathVariable Integer qaId){
+        managementService.update(questionVo,qaId);
+        return ResultData.SUCCESS;
     }
 }

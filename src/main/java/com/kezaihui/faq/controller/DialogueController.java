@@ -28,17 +28,12 @@ import java.util.List;
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")   //处理跨域请求
 @Slf4j
 public class DialogueController {
-    @Autowired
-    private DialogueConfig dialogueConfig;
 
     @Autowired
     private DialogueService dialogueService;
 
 
-    @Autowired
-    private FaqPairDao faqPairDao;
-
-    @RequestMapping(value = "/ask", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/ask", method = RequestMethod.GET)
     public CommonReturnType ask(
             @RequestParam(name = "question") String question,
             @RequestParam(name = "user_id") Integer userId) throws IOException {
@@ -59,40 +54,23 @@ public class DialogueController {
         log.info("(userId={})当前用户提问\"{}\"，处理耗时{}ms", userId, question, stopWatch.getTotalTimeMillis());
 
         return CommonReturnType.create(vo, statusModel.getCodeMsg());
-    }
+    }*/
 
 
-    @RequestMapping(value = "/ask2", method = RequestMethod.GET)
+    @RequestMapping(value = "/ask", method = RequestMethod.GET)
     @ResponseBody
     public ResultData ask2(
-            @RequestParam(name = "question") String question,
-            @RequestParam(name = "user_id") Integer userId) throws IOException {
+            @RequestParam(name = "question") String question) throws IOException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
-        DialogueStatus statusModel = new DialogueStatus();
-        //没有则为用户创建一个对话状态
-        statusModel.setUserId(userId);
-        //有则更新问题和robotId
-        statusModel.setQuestion(question);
         //调用service回答
-        //statusModel = dialogueService.answer2(statusModel);
-        //创建视图对象
-        DialogueResultVO vo = new DialogueResultVO();
-        BeanUtils.copyProperties(statusModel, vo);
+        AnswerResultVo result = dialogueService.answer2(question);
         stopWatch.stop();
-        log.info("(userId={})当前用户提问\"{}\"，处理耗时{}ms", userId, question, stopWatch.getTotalTimeMillis());
-        AnswerResultVo result = AnswerResultVo.builder().build();
-
+        log.info("当前用户提问\"{}\"，处理耗时{}ms", question, stopWatch.getTotalTimeMillis());
         return ResultData.<AnswerResultVo>success()
                 .data(result)
                 .build();
     }
 
-    @GetMapping("/getAll")
-    public List<FaqPair> getAll() {
-        List<FaqPair> faqPairs = faqPairDao.listAll();
-        return faqPairs;
-    }
 
 }

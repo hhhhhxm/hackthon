@@ -74,7 +74,12 @@
 
         <!--        springfox swagger2-->
 
-
+        <!--相似度-->
+        <dependency>
+            <groupId>info.debatty</groupId>
+            <artifactId>java-string-similarity</artifactId>
+            <version>1.1.0</version>
+        </dependency>
         <!--json-->
         <dependency>
             <groupId>com.alibaba</groupId>

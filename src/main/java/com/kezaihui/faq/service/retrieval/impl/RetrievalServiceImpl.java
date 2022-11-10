@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +67,6 @@ public class RetrievalServiceImpl implements RetrievalService {
             e.printStackTrace();
             return null;
         }
-        //状态
-        RestStatus status = response.status();
-        //耗时
-        TimeValue took = response.getTook();
-
         SearchHits hits = response.getHits();
         long totalHits = hits.getTotalHits();
         if (totalHits == 0) {
@@ -87,14 +83,15 @@ public class RetrievalServiceImpl implements RetrievalService {
             float score = hit.getScore();
             Map<String, Object> sourceAsMap = hit.getSourceAsMap();
             RetrievalDataModel retrievalDataModel = new RetrievalDataModel();
-            retrievalDataModel.setId(id);
-            retrievalDataModel.setRelevanceScore(score);
+            retrievalDataModel.setId((Integer) sourceAsMap.get(id));
+            retrievalDataModel.setRelevanceScore((double)score);
             retrievalDataModel.setStandardQuestion((String) sourceAsMap.get("standard_question"));
-            retrievalDataModel.setStandardAnswer((String) sourceAsMap.get("standard_answer"));
-            Integer qaId = (Integer) sourceAsMap.get("qa_id");
-            retrievalDataModel.setQaId(qaId);
-
-            retrievalDataModelList.add(retrievalDataModel);
+            retrievalDataModel.setTextValue((String) sourceAsMap.get("text_value"));
+            retrievalDataModel.setType((String) sourceAsMap.get("type"));
+            retrievalDataModel.setInUse((Boolean) sourceAsMap.get("in_use"));
+            if (retrievalDataModel.getInUse()) {
+                retrievalDataModelList.add(retrievalDataModel);
+            }
         }
         client.close();
         return retrievalDataModelList;

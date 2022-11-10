@@ -1,6 +1,5 @@
 package com.kezaihui.faq.vo;
 
-import com.kezaihui.faq.emum.DataType;
 import lombok.*;
 
 @Data
@@ -8,15 +7,20 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AnswerVo {
 
     /**
      * 数据类型
      */
-    private DataType dataType;
+    private String dataType;
 
     /**
      * 文本类型
      */
     private String textValue;
+    /**
+     * 简短的答案
+     */
+    private String standardQuestion;
 }

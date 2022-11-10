@@ -6,6 +6,7 @@ import com.kezaihui.faq.dataObject.Answer;
 import com.kezaihui.faq.dataObject.DialogueStatus;
 import com.kezaihui.faq.dataObject.MultiQaTreeNode;
 import com.kezaihui.faq.dataObject.RecommendQuestion;
+import com.kezaihui.faq.emum.DataType;
 import com.kezaihui.faq.response.CodeMsg;
 import com.kezaihui.faq.service.DialogueService;
 import com.kezaihui.faq.service.model.MatchingDataModel;
@@ -240,7 +241,15 @@ public class DialogueServiceImpl implements DialogueService {
 
             return confidence2.compareTo(confidence1);
         });
+        retrievalDataModelList.forEach(x -> {
+            AnswerVo vo = AnswerVo.builder()
+                    .textValue(x.getTextValue())
+                    .standardQuestion(x.getStandardQuestion())
+                    .dataType(x.getType())
+                    .build();
+            answers.add(vo);
 
+        });
 
         return result;
     }

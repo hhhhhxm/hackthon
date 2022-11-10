@@ -38,7 +38,9 @@
       "standard_answer": {
         "type": "text"
       },"in_use": {
-        "type": "integer"
+        "type": "boolean"
+      },"type": {
+        "type": "text"
       }
     }
   }

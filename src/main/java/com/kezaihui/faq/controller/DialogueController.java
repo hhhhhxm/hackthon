@@ -63,12 +63,10 @@ public class DialogueController {
             @RequestParam(name = "question") String question) throws IOException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
         //调用service回答
-        dialogueService.answer2(question);
+        AnswerResultVo result = dialogueService.answer2(question);
         stopWatch.stop();
         log.info("当前用户提问\"{}\"，处理耗时{}ms", question, stopWatch.getTotalTimeMillis());
-        AnswerResultVo result = AnswerResultVo.builder().build();
         return ResultData.<AnswerResultVo>success()
                 .data(result)
                 .build();

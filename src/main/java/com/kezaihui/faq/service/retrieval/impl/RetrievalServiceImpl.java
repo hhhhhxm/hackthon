@@ -87,12 +87,8 @@ public class RetrievalServiceImpl implements RetrievalService {
             retrievalDataModel.setRelevanceScore((double)score);
             retrievalDataModel.setStandardQuestion((String) sourceAsMap.get("standard_question"));
             retrievalDataModel.setTextValue((String) sourceAsMap.get("text_value"));
-            retrievalDataModel.setCreatorId((Integer) sourceAsMap.get("creator_id"));
-            retrievalDataModel.setCreatorName((String) sourceAsMap.get("creator_name"));
             retrievalDataModel.setType((String) sourceAsMap.get("type"));
             retrievalDataModel.setInUse((Boolean) sourceAsMap.get("in_use"));
-            retrievalDataModel.setCreatedAt((LocalDateTime) sourceAsMap.get("created_at"));
-            retrievalDataModel.setUpdatedAt((LocalDateTime) sourceAsMap.get("updated_at"));
             if (retrievalDataModel.getInUse()) {
                 retrievalDataModelList.add(retrievalDataModel);
             }

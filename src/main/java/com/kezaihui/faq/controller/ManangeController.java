@@ -21,11 +21,8 @@ public class ManangeController {
 
     @Autowired
     private FaqPairDao faqPairDao;
-
-
     @Autowired
     private TransactionTemplate transactionTemplate;
-
     @Autowired
     private ManagementController managementController;
 

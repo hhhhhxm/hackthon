@@ -1,6 +1,8 @@
 package com.kezaihui.faq.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kezaihui.faq.config.DialogueConfig;
 import com.kezaihui.faq.config.ElasticsearchConfig;
 import com.kezaihui.faq.config.RetrievalConfig;
@@ -9,6 +11,8 @@ import com.kezaihui.faq.dataObject.MultiQaTreeNode;
 import com.kezaihui.faq.entity.FaqPair;
 import com.kezaihui.faq.service.ManagementService;
 import com.kezaihui.faq.util.RestClientUtil;
+import com.kezaihui.faq.vo.QuestionListVo;
+import com.kezaihui.faq.vo.QuestionVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.elasticsearch.ElasticsearchException;
@@ -21,15 +25,19 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Author: lerry_li
@@ -157,6 +165,33 @@ public class ManagementServiceImpl implements ManagementService {
         //返回更新的多轮问答树的总数
         log.info("已更新{}个多轮问答树到redis中", accout);
         return NumsOfTreeNode;
+    }
+
+    @Override
+    public Page<FaqPair> page(QuestionListVo questionListVo) {
+        Page<FaqPair> page = new Page<>(questionListVo.getPage(), questionListVo.getSize());
+        LambdaQueryWrapper<FaqPair> queryWrapper = new LambdaQueryWrapper<>();
+        Optional.ofNullable(questionListVo.getStandardQuestion()).filter(StringUtils::hasText)
+                .ifPresent(value -> queryWrapper.like(FaqPair::getStandardQuestion, value));
+        Optional.ofNullable(questionListVo.getCreatorId())
+                .ifPresent(value -> queryWrapper.eq(FaqPair::getCreatorId, value));
+        return faqPairDao.selectPage(page, queryWrapper);
+    }
+
+    @Override
+    public void update(QuestionVo questionVo, Integer qaId) {
+        FaqPair faqPair = new FaqPair();
+        BeanUtils.copyProperties(questionVo, faqPair);
+        faqPair.setId(qaId);
+        faqPair.setUpdatedAt(LocalDateTime.now());
+        String tableIndexName = "faq_pair";
+
+        faqPairDao.updateById(faqPair);
+        try {
+            totalSynchronize(tableIndexName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

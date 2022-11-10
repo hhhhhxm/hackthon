@@ -31,6 +31,9 @@
     <select id="listAll" resultMap="BaseResultMap">
         select * from faq_pair
     </select>
+    <select id="getDetail" resultType="com.kezaihui.faq.entity.FaqPair">
+        select * from faq_pair where id = #{qaId}
+    </select>
 
 
 </mapper>

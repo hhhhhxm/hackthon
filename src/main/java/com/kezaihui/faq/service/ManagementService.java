@@ -1,5 +1,10 @@
 package com.kezaihui.faq.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kezaihui.faq.entity.FaqPair;
+import com.kezaihui.faq.vo.QuestionListVo;
+import com.kezaihui.faq.vo.QuestionVo;
+
 import java.io.IOException;
 
 /**
@@ -21,4 +26,8 @@ public interface ManagementService {
      * @return 成功更新的数量
      */
     int updateMultiTree();
+
+    Page<FaqPair> page(QuestionListVo questionListVo);
+
+    void update(QuestionVo questionVo, Integer qaId);
 }

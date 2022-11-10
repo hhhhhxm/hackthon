@@ -18,7 +18,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResultData<T> implements Result {
 
-    public final static int SUCCESS_CODE = 0;
+    public final static int SUCCESS_CODE = 200;
+
+    public final static int ERR_CODE = 500;
     public final static String SUCCESS_MESSAGE = "操作成功";
 
     public final static ResultData SUCCESS = success().build();
@@ -35,4 +37,11 @@ public class ResultData<T> implements Result {
         return ResultData.<M>builder().code(SUCCESS_CODE).message(SUCCESS_MESSAGE);
     }
 
+    public static <M> ResultDataBuilder<M> error() {
+        return ResultData.<M>builder().code(ERR_CODE);
+    }
+
+    public static <M> ResultDataBuilder<M> error(String messageStr) {
+        return ResultData.<M>builder().code(ERR_CODE).message(messageStr);
+    }
 }

@@ -27,7 +27,7 @@ public class ManangeController {
     private ManagementController managementController;
 
 
-    @GetMapping("/manange/{qaId}")
+    @GetMapping("/{qaId}")
     public ResultData<FaqPairDetailVo> getDetail(@PathVariable("qaId") Integer qaId) {
         FaqPair detail = faqPairDao.getDetail(qaId);
         if (Objects.isNull(detail)) {
@@ -67,7 +67,7 @@ public class ManangeController {
         return ResultData.<FaqPairDetailVo>success().build();
     }
 
-    @PutMapping("/manange/close/{qaId}")
+    @PutMapping("/close/{qaId}")
     public ResultData<FaqPairDetailVo> closeDetail(@PathVariable("qaId") Integer qaId) {
         return transactionTemplate.execute(status -> changeInUse(qaId, false));
     }

@@ -23,7 +23,7 @@ import java.util.List;
  * @Description
  */
 @RestController
-@RequestMapping("/dialogue/manage")
+@RequestMapping("/management")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")   //处理跨域请求
 @Slf4j
 public class ManagementController {

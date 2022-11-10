@@ -25,7 +25,7 @@ public class ClientController {
     private static final String ROB_URL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=78339ff3-8da5-4af6-98b7-1132abef81cf";
 
 
-    @GetMapping("/client/create_ask")
+    @PostMapping("/client/create_ask")
     public ResultData<?> createAsk(@RequestBody CreateAskRo askRo) {
         if (!CollectionUtils.isEmpty(askRo.getBase64List())) {
             askRo.getBase64List().forEach(base64 -> {

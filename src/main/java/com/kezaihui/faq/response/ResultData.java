@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResultData<T> implements Result {
 
+    public final static int ERROR_CODE = 500;
     public final static int SUCCESS_CODE = 200;
 
     public final static int ERR_CODE = 500;

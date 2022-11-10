@@ -1,5 +1,7 @@
 package com.kezaihui.faq.service;
 
+import com.kezaihui.faq.entity.FaqPair;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kezaihui.faq.entity.FaqPair;
 import com.kezaihui.faq.vo.QuestionListVo;
@@ -32,6 +34,20 @@ public interface ManagementService {
     Page<FaqPair> page(QuestionListVo questionListVo);
 
     void update(QuestionVo questionVo, Integer qaId);
+
+    /**
+     * 管理端新增问题
+     *
+     * @param faqPair
+     */
+    void addFaqPair(FaqPair faqPair);
+
+    /**
+     * 管理端删除问题
+     *
+     * @param id
+     */
+    void deleteFaqPair(Integer id);
 
     List<FaqPair> topList();
 

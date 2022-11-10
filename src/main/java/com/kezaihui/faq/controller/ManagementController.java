@@ -14,6 +14,7 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
  * @Description
  */
 @RestController
-@RequestMapping("/management")
+@RequestMapping("/dialogue/manage")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")   //处理跨域请求
 @Slf4j
 public class ManagementController {
@@ -80,6 +81,38 @@ public class ManagementController {
     @PutMapping("/{qaId}")
     public ResultData update(@RequestBody QuestionVo questionVo, @PathVariable Integer qaId) {
         managementService.update(questionVo, qaId);
+        return ResultData.SUCCESS;
+    }
+
+    /**
+     * 新增问题
+     *
+     * @return
+     */
+    @PostMapping("")
+    public ResultData addFaqPair(@RequestBody FaqPair faqPair) throws IOException {
+        if (Objects.isNull(faqPair)){
+            throw new RuntimeException("参数异常");
+        }
+        managementService.addFaqPair(faqPair);
+        //同步到搜索引擎
+        try {
+            totalSynchronize();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResultData.SUCCESS;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResultData deleteFaqPair(@PathVariable Integer id){
+        managementService.deleteFaqPair(id);
+        //同步到搜索引擎
+        try {
+            totalSynchronize();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return ResultData.SUCCESS;
     }
 

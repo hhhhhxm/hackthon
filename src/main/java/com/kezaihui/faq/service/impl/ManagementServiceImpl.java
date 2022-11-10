@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.kezaihui.faq.config.DialogueConfig;
 import com.kezaihui.faq.config.ElasticsearchConfig;
 import com.kezaihui.faq.config.RetrievalConfig;
+import com.kezaihui.faq.dao.FaqPairDao;
 import com.kezaihui.faq.dataObject.MultiQaTreeNode;
 import com.kezaihui.faq.entity.FaqPair;
-import com.kezaihui.faq.mapper.FaqPairMapper;
 import com.kezaihui.faq.service.ManagementService;
 import com.kezaihui.faq.util.RedisUtil;
 import com.kezaihui.faq.util.RestClientUtil;
@@ -51,7 +51,7 @@ public class ManagementServiceImpl implements ManagementService {
     private DialogueConfig dialogueConfig;
 
     @Autowired
-    private FaqPairMapper faqPairMapper;
+    private FaqPairDao faqPairDao;
 
     @Autowired
     private RestClientUtil restClientUtil;
@@ -63,7 +63,7 @@ public class ManagementServiceImpl implements ManagementService {
     public int totalSynchronize(String tableIndexName) throws IOException {
         int account = 0;
         //查询数据库中所有数据
-        List<FaqPair> faqPairList = faqPairMapper.selectAll();
+        List<FaqPair> faqPairList = faqPairDao.listAll();
         //es client初始化
         RestHighLevelClient client = restClientUtil.getClient(ESConfig.getHost(), ESConfig.getPort());
         //删除原索引
@@ -102,9 +102,7 @@ public class ManagementServiceImpl implements ManagementService {
         int size = faqPairList.size();
         for (FaqPair faqPair : faqPairList) {
             Map<String, Object> jsonMap = new HashMap<>();
-            jsonMap.put("qa_id", faqPair.getQaId());
             jsonMap.put("standard_question", faqPair.getStandardQuestion());
-            jsonMap.put("standard_answer", faqPair.getStandardAnswer());
             request = restClientUtil.getIndexRequest(tableIndexName, jsonMap);
             try {
                 IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);

@@ -2,7 +2,9 @@ package com.kezaihui.faq.controller;
 
 import com.kezaihui.faq.config.DialogueConfig;
 import com.kezaihui.faq.controller.viewObject.DialogueResultVO;
+import com.kezaihui.faq.dao.FaqPairDao;
 import com.kezaihui.faq.dataObject.DialogueStatus;
+import com.kezaihui.faq.entity.FaqPair;
 import com.kezaihui.faq.response.CommonReturnType;
 import com.kezaihui.faq.response.ResultData;
 import com.kezaihui.faq.service.DialogueService;
@@ -18,6 +20,7 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Author: lerry_li
@@ -38,6 +41,9 @@ public class DialogueController {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private FaqPairDao faqPairDao;
 
     @ApiOperation("提问问题")
     @RequestMapping(value = "/ask", method = RequestMethod.GET)
@@ -65,9 +71,9 @@ public class DialogueController {
 
 
     @ApiOperation("提问问题")
-    @RequestMapping(value = "/ask", method = RequestMethod.GET)
+    @RequestMapping(value = "/ask2", method = RequestMethod.GET)
     @ResponseBody
-    public ResultData ask(
+    public ResultData ask2(
             @ApiParam("用户问题") @RequestParam(name = "question") String question,
             @ApiParam("用户id") @RequestParam(name = "user_id") Integer userId) throws IOException {
         StopWatch stopWatch = new StopWatch();
@@ -79,7 +85,7 @@ public class DialogueController {
         //有则更新问题和robotId
         statusModel.setQuestion(question);
         //调用service回答
-        statusModel = dialogueService.answer2(statusModel);
+        //statusModel = dialogueService.answer2(statusModel);
         //创建视图对象
         DialogueResultVO vo = new DialogueResultVO();
         BeanUtils.copyProperties(statusModel, vo);
@@ -90,6 +96,12 @@ public class DialogueController {
         return ResultData.<AnswerResultVo>success()
                 .data(result)
                 .build();
+    }
+
+    @GetMapping("/getAll")
+    public List<FaqPair> getAll() {
+        List<FaqPair> faqPairs = faqPairDao.listAll();
+        return faqPairs;
     }
 
 }

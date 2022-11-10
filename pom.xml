@@ -74,7 +74,12 @@
 
         <!--        springfox swagger2-->
 
-
+        <!--相似度-->
+        <dependency>
+            <groupId>info.debatty</groupId>
+            <artifactId>java-string-similarity</artifactId>
+            <version>1.1.0</version>
+        </dependency>
         <!--json-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -92,6 +97,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.4</version>
+        </dependency>
+        <dependency>
+            　　<groupId>com.squareup.okhttp3</groupId>
+            　　<artifactId>okhttp</artifactId>
+            　　<version>3.14.2</version>
         </dependency>
 
     </dependencies>

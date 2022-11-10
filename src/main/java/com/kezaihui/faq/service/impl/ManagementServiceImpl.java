@@ -108,6 +108,9 @@ public class ManagementServiceImpl implements ManagementService {
         for (FaqPair faqPair : faqPairList) {
             Map<String, Object> jsonMap = new HashMap<>();
             jsonMap.put("standard_question", faqPair.getStandardQuestion());
+            jsonMap.put("text_value", faqPair.getTextValue());
+            jsonMap.put("type", faqPair.getType());
+            jsonMap.put("in_use", faqPair.getInUse());
             request = restClientUtil.getIndexRequest(tableIndexName, jsonMap);
             try {
                 IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);

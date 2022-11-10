@@ -6,18 +6,21 @@ import com.kezaihui.faq.dataObject.Answer;
 import com.kezaihui.faq.dataObject.DialogueStatus;
 import com.kezaihui.faq.dataObject.MultiQaTreeNode;
 import com.kezaihui.faq.dataObject.RecommendQuestion;
+import com.kezaihui.faq.emum.DataType;
 import com.kezaihui.faq.response.CodeMsg;
 import com.kezaihui.faq.service.DialogueService;
 import com.kezaihui.faq.service.model.MatchingDataModel;
 import com.kezaihui.faq.service.retrieval.RetrievalService;
 import com.kezaihui.faq.service.retrieval.model.RetrievalDataModel;
 import com.kezaihui.faq.service.similarity.SimilarityService;
+import com.kezaihui.faq.util.Similarity;
 import com.kezaihui.faq.vo.AnswerResultVo;
 import com.kezaihui.faq.vo.AnswerVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -212,79 +215,43 @@ public class DialogueServiceImpl implements DialogueService {
         AnswerResultVo result = AnswerResultVo.builder()
                 .answerList(answers)
                 .build();
-
-
         //否则需要进行检索
         //2.检索
         List<RetrievalDataModel> retrievalDataModelList = retrievalService.searchSimilarQuestions(question);
-        int total_counts = retrievalDataModelList.size();
-        //3.语义相似度计算
-        List<String> questionList = new ArrayList<>(total_counts);
-        List<String> similarQuestionList = new ArrayList<>(total_counts);
+        if (CollectionUtils.isEmpty(retrievalDataModelList)) {
+            return result;
+        }
         for (RetrievalDataModel retrievalDataModel : retrievalDataModelList) {
-            questionList.add(question);
-            similarQuestionList.add(retrievalDataModel.getStandardQuestion());
+            double apply = Similarity.apply(question, retrievalDataModel.getStandardQuestion());
+            retrievalDataModel.setSimilarityScore(apply);
         }
-        List<Float> similarityScoreList = similarityService.similarityCalculation(questionList, similarQuestionList);
 
-        //若相似度模型返回为空，则忽略相似度
-        if (similarityScoreList == null || similarityScoreList.size() == 0) {
-
-
-            //填充语义相似度为0
-            similarityScoreList = new ArrayList<>();
-            for (int i = 0; i < total_counts; i++) {
-                similarityScoreList.add(0F);
-            }
-
-        }
-        //4.问答处理
-        //4.1组装matchingDataModel
-        List<MatchingDataModel> matchingDataModelList = new ArrayList<>(total_counts);
-        for (int i = 0; i < total_counts; i++) {
-            matchingDataModelList.add(new MatchingDataModel());
-            BeanUtils.copyProperties(retrievalDataModelList.get(i), matchingDataModelList.get(i));
-            matchingDataModelList.get(i).setSimilarityScore(similarityScoreList.get(i));
-        }
         //4.2综合相关度得分和相似度得分，两者加权求和为置信度，按置信度排序
-        matchingDataModelList.sort((o1, o2) -> {
+        retrievalDataModelList.sort((o1, o2) -> {
             //综合相关度得分和相似度得分，加权求和
-            Float confidence1 = o1.getConfidence();
-            if (confidence1 == null) {
-                Float relevanceScore1 = o1.getRelevanceScore();
-                Float similarityScore1 = o1.getSimilarityScore();
-                confidence1 = dialogueConfig.getConfidenceRank().getWeights().getRelevanceWeight() * relevanceScore1 + dialogueConfig.getConfidenceRank().getWeights().getSimilarityWeight() * similarityScore1;
-                o1.setConfidence(confidence1);
-            }
-            Float confidence2 = o2.getConfidence();
-            if (confidence2 == null) {
-                Float relevanceScore2 = o2.getRelevanceScore();
-                Float similarityScore2 = o2.getSimilarityScore();
-                confidence2 = dialogueConfig.getConfidenceRank().getWeights().getRelevanceWeight() * relevanceScore2 + dialogueConfig.getConfidenceRank().getWeights().getSimilarityWeight() * similarityScore2;
-                o2.setConfidence(confidence2);
-            }
+            Double relevanceScore1 = o1.getRelevanceScore();
+            Double similarityScore1 = o1.getSimilarityScore();
+            Double confidence1 = dialogueConfig.getConfidenceRank().getWeights().getRelevanceWeight() * relevanceScore1 + dialogueConfig.getConfidenceRank().getWeights().getSimilarityWeight() * similarityScore1;
+            o1.setConfidence(confidence1);
+
+            Double relevanceScore2 = o2.getRelevanceScore();
+            Double similarityScore2 = o2.getSimilarityScore();
+            Double confidence2 = dialogueConfig.getConfidenceRank().getWeights().getRelevanceWeight() * relevanceScore2 + dialogueConfig.getConfidenceRank().getWeights().getSimilarityWeight() * similarityScore2;
+            o2.setConfidence(confidence2);
 
             return confidence2.compareTo(confidence1);
         });
-        //4.3填充结果
-        //记录识别为多轮的标记
-        boolean isRecognizeMultiRound = false;
-        for (int i = 0; i < dialogueConfig.getConfidenceRank().getSize() && i < total_counts; i++) {
-            MatchingDataModel matchingDataModel = matchingDataModelList.get(i);
-            //置信度最高的结果作为answer
-            if (i == 0) {
-            }
-            //其他的作为相关问题推荐
-            else {
-                RecommendQuestion recommendQuestion = new RecommendQuestion();
-                recommendQuestion.setStdQ(matchingDataModel.getStandardQuestion());
-                recommendQuestion.setStdA(matchingDataModel.getStandardAnswer());
-                recommendQuestion.setConfidence(matchingDataModel.getConfidence());
-            }
-        }
+        retrievalDataModelList.forEach(x -> {
+            AnswerVo vo = AnswerVo.builder()
+                    .textValue(x.getTextValue())
+                    .standardQuestion(x.getStandardQuestion())
+                    .dataType(x.getType())
+                    .build();
+            answers.add(vo);
 
+        });
 
-        return null;
+        return result;
     }
 
     /**

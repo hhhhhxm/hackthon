@@ -181,10 +181,17 @@ public class ManagementServiceImpl implements ManagementService {
     @Override
     public void update(QuestionVo questionVo, Integer qaId) {
         FaqPair faqPair = new FaqPair();
-        BeanUtils.copyProperties(questionVo,faqPair);
+        BeanUtils.copyProperties(questionVo, faqPair);
         faqPair.setId(qaId);
         faqPair.setUpdatedAt(LocalDateTime.now());
+        String tableIndexName = "faq_pair";
+
         faqPairDao.updateById(faqPair);
+        try {
+            totalSynchronize(tableIndexName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

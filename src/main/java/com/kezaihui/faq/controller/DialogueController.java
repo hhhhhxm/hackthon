@@ -79,10 +79,5 @@ public class DialogueController {
                 .build();
     }
 
-    @GetMapping("/getAll")
-    public List<FaqPair> getAll() {
-        List<FaqPair> faqPairs = faqPairDao.listAll();
-        return faqPairs;
-    }
 
 }

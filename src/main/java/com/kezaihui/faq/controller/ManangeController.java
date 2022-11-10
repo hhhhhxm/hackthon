@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/manange")
+@RequestMapping("/management")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Slf4j
 public class ManangeController {
@@ -41,11 +41,12 @@ public class ManangeController {
                         .inUse(detail.getInUse())
                         .creatorId(detail.getCreatorId())
                         .creatorName(detail.getCreatorName())
+                        .askCount(detail.getAskCount())
                         .build())
                 .build();
     }
 
-    @PutMapping("/manange/open/{qaId}")
+    @PutMapping("/open/{qaId}")
     public ResultData<FaqPairDetailVo> openDetail(@PathVariable("qaId") Integer qaId) {
         return transactionTemplate.execute(status -> changeInUse(qaId, true));
     }

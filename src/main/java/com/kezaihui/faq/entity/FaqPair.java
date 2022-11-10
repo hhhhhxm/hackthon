@@ -27,6 +27,8 @@ public class FaqPair {
     private DataType type;
     //是否使用
     private Boolean inUse;
+    //询问次数
+    private Long askCount;
     //创建日期
     private LocalDateTime createdAt;
     //更新日期

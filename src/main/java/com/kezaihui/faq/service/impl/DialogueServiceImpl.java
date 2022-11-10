@@ -246,6 +246,7 @@ public class DialogueServiceImpl implements DialogueService {
                     .textValue(x.getTextValue())
                     .standardQuestion(x.getStandardQuestion())
                     .dataType(x.getType())
+                    .id(x.getId())
                     .build();
             answers.add(vo);
 

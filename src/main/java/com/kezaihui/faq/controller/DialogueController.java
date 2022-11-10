@@ -33,33 +33,10 @@ public class DialogueController {
     private DialogueService dialogueService;
 
 
-    /*@RequestMapping(value = "/ask", method = RequestMethod.GET)
-    public CommonReturnType ask(
-            @RequestParam(name = "question") String question,
-            @RequestParam(name = "user_id") Integer userId) throws IOException {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-
-        DialogueStatus statusModel = new DialogueStatus();
-        //没有则为用户创建一个对话状态
-        statusModel.setUserId(userId);
-        //有则更新问题和robotId
-        statusModel.setQuestion(question);
-        //调用service回答
-        statusModel = dialogueService.answer(statusModel);
-        //创建视图对象
-        DialogueResultVO vo = new DialogueResultVO();
-        BeanUtils.copyProperties(statusModel, vo);
-        stopWatch.stop();
-        log.info("(userId={})当前用户提问\"{}\"，处理耗时{}ms", userId, question, stopWatch.getTotalTimeMillis());
-
-        return CommonReturnType.create(vo, statusModel.getCodeMsg());
-    }*/
-
 
     @RequestMapping(value = "/ask", method = RequestMethod.GET)
     @ResponseBody
-    public ResultData ask2(
+    public ResultData ask(
             @RequestParam(name = "question") String question) throws IOException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

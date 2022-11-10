@@ -19,6 +19,8 @@ public class FaqPairDetailVo {
     private Integer creatorId;
     //创建人姓名
     private String creatorName;
+    //询问次数
+    private Long askCount;
     //答案类型
     private DataType type;
     //是否使用

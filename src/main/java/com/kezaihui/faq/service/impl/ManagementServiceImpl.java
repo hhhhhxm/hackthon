@@ -28,16 +28,14 @@ import org.elasticsearch.rest.RestStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @Author: lerry_li
@@ -111,6 +109,7 @@ public class ManagementServiceImpl implements ManagementService {
             jsonMap.put("text_value", faqPair.getTextValue());
             jsonMap.put("type", faqPair.getType());
             jsonMap.put("in_use", faqPair.getInUse());
+            jsonMap.put("id", faqPair.getId());
             request = restClientUtil.getIndexRequest(tableIndexName, jsonMap);
             try {
                 IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);
@@ -256,4 +255,18 @@ public class ManagementServiceImpl implements ManagementService {
         return JSONObject.parseObject(jsonData, MultiQaTreeNode.class);
     }
 
+    @Override
+    public List<FaqPair> topList() {
+        List<FaqPair> result = new ArrayList<>();
+        List<FaqPair> topList = faqPairDao.getTopList();
+        if (!CollectionUtils.isEmpty(topList)) {
+            result = topList;
+        }
+        return result;
+    }
+
+    @Override
+    public void addCount(Integer qaId) {
+        faqPairDao.addCount(qaId);
+    }
 }

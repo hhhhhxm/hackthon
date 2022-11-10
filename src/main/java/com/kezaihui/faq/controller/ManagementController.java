@@ -40,7 +40,7 @@ public class ManagementController {
     @RequestMapping(value = "/total_synchronize", method = RequestMethod.GET)
     public CommonReturnType totalSynchronize() throws IOException {
 
-        String tableIndexName="faq_pair";
+        String tableIndexName = "faq_pair";
         //检查表/索引名是否有效
         if (!retrievalConfig.getIndex().getFaqPair().equals(tableIndexName)) {
             log.error("{}不在可以同步的表/索引中", tableIndexName);
@@ -78,8 +78,22 @@ public class ManagementController {
 
 
     @PutMapping("/{qaId}")
-    public ResultData update(@RequestBody QuestionVo questionVo, @PathVariable Integer qaId){
-        managementService.update(questionVo,qaId);
+    public ResultData update(@RequestBody QuestionVo questionVo, @PathVariable Integer qaId) {
+        managementService.update(questionVo, qaId);
         return ResultData.SUCCESS;
     }
+
+    @GetMapping("/top_list")
+    public ResultData<List<FaqPair>> topList() {
+        List<FaqPair> faqPairs = managementService.topList();
+        return ResultData.<List<FaqPair>>success()
+                .data(faqPairs).build();
+    }
+
+    @PutMapping("/add/{qa_id}")
+    public ResultData addCount(@PathVariable("qa_id") Integer qaId) {
+        managementService.addCount(qaId);
+        return ResultData.SUCCESS;
+    }
+
 }

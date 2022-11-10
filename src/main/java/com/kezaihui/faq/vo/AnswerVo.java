@@ -23,4 +23,6 @@ public class AnswerVo {
      * 简短的答案
      */
     private String standardQuestion;
+
+    private Integer id;
 }

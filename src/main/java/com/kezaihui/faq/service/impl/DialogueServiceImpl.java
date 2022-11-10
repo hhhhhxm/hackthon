@@ -12,7 +12,6 @@ import com.kezaihui.faq.service.model.MatchingDataModel;
 import com.kezaihui.faq.service.retrieval.RetrievalService;
 import com.kezaihui.faq.service.retrieval.model.RetrievalDataModel;
 import com.kezaihui.faq.service.similarity.SimilarityService;
-import com.kezaihui.faq.util.RedisUtil;
 import com.kezaihui.faq.vo.AnswerResultVo;
 import com.kezaihui.faq.vo.AnswerVo;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +40,6 @@ public class DialogueServiceImpl implements DialogueService {
     @Autowired
     private SimilarityService similarityService;
 
-    @Autowired
-    private RedisUtil redisUtil;
-
 
     @Override
     public DialogueStatus answer(DialogueStatus dialogueStatus) throws IOException {
@@ -60,15 +56,14 @@ public class DialogueServiceImpl implements DialogueService {
         //1.2 查看redis中是否有对应的热点数据
         HashMap<String, String> hotDataQuestion2id = null;
         if (dialogueConfig.getHotData().getOpen()) {
-            hotDataQuestion2id = (HashMap<String, String>) redisUtil.get(dialogueConfig.getHotDataQuestion2idKey());
             if (hotDataQuestion2id != null && hotDataQuestion2id.containsKey(question)) {
                 //根据id对应的key找到对应的缓存数据
-                DialogueResultVO dialogueResultVO = (DialogueResultVO) redisUtil.get(dialogueConfig.getHotDataKeyPrefix() + hotDataQuestion2id.get(question));
+                DialogueResultVO dialogueResultVO = null;
                 if (dialogueResultVO != null) {
                     //将缓存中的数据拷贝到领域模型中
                     BeanUtils.copyProperties(dialogueResultVO, dialogueStatus);
                     //判断是多轮还是单轮
-                    HashMap<String, Integer> MQAQuestion2Id = (HashMap<String, Integer>) redisUtil.get(dialogueConfig.getMQAQuestion2idKey());
+                    HashMap<String, Integer> MQAQuestion2Id = null;
                     String stdQuestion = dialogueResultVO.getAnswer().getStdQ();
 
                     return dialogueStatus;
@@ -204,10 +199,7 @@ public class DialogueServiceImpl implements DialogueService {
             String hotDataIdToken = UUID.randomUUID().toString().replace("-", "");
             //将question映射到id token上
             hotDataQuestion2id.put(question, hotDataIdToken);
-            redisUtil.set(dialogueConfig.getHotDataQuestion2idKey(), hotDataQuestion2id);
             String hotDataKey = dialogueConfig.getHotDataKeyPrefix() + hotDataIdToken;
-            redisUtil.set(hotDataKey, vo);
-            redisUtil.expire(hotDataKey, dialogueConfig.getHotData().getExpireTime());
         }
 
         return dialogueStatus;
@@ -304,7 +296,7 @@ public class DialogueServiceImpl implements DialogueService {
     public DialogueStatus firstProcessMultiRound(DialogueStatus statusModel) {
         String standardQuestion = statusModel.getAnswer().getStdQ();
         //首先到redis中查找多轮问答树的question2id的键值对
-        HashMap<String, Integer> question2id = (HashMap<String, Integer>) redisUtil.get(dialogueConfig.getMQAQuestion2idKey());
+        HashMap<String, Integer> question2id = new HashMap<>();
         //若question2id不存在
         if (question2id == null) {
             log.info("(userId={})redis中多轮问答树为空", statusModel.getUserId());
@@ -325,7 +317,7 @@ public class DialogueServiceImpl implements DialogueService {
         }
         //根据question对应的id，从redis中获取对应的多轮问答树
         Integer MQATreeId = question2id.get(standardQuestion);
-        MultiQaTreeNode node = (MultiQaTreeNode) redisUtil.get(dialogueConfig.getMQATreeKeyPrefix() + MQATreeId);
+        MultiQaTreeNode node = null;
         //填充statusModel
         statusModel.getAnswer().setContent(node.getAnswer());
 

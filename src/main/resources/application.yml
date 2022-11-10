@@ -5,9 +5,9 @@ server:
 spring:
   #mysql连接
   datasource:
-    url: jdbc:mysql://150.158.33.124:3306/faqdb?characterEncoding=utf8&serverTimezone=UTC
+    url: jdbc:mysql://175.178.238.35:3306/faqdb?characterEncoding=utf8&serverTimezone=UTC
     username: root
-    password: 123456
+    password: sherry
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       minimum-idle: 5
@@ -27,14 +27,6 @@ spring:
   mvc:
     throw-exception-if-no-handler-found: true
   #redis连接
-  redis:
-    host: 150.158.33.124
-    port: 6379
-    database: 6
-    jedis:
-      pool:
-        max-active: 50
-        min-idle: 20
   #引入自定义配置，application-user.yml
   profiles:
     include:
@@ -45,6 +37,7 @@ elasticsearch:
   host: 150.158.33.124
   port: 9200
 
-
+mybatis-plus:
+  mapper-locations: mapper/*.xml
 
 

@@ -14,6 +14,7 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
  * @Description
  */
 @RestController
-@RequestMapping("/management")
+@RequestMapping("/dialogue/manage")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")   //处理跨域请求
 @Slf4j
 public class ManagementController {
@@ -40,7 +41,7 @@ public class ManagementController {
     @RequestMapping(value = "/total_synchronize", method = RequestMethod.GET)
     public CommonReturnType totalSynchronize() throws IOException {
 
-        String tableIndexName="faq_pair";
+        String tableIndexName = "faq_pair";
         //检查表/索引名是否有效
         if (!retrievalConfig.getIndex().getFaqPair().equals(tableIndexName)) {
             log.error("{}不在可以同步的表/索引中", tableIndexName);
@@ -80,6 +81,38 @@ public class ManagementController {
     @PutMapping("/{qaId}")
     public ResultData update(@RequestBody QuestionVo questionVo, @PathVariable Integer qaId){
         managementService.update(questionVo,qaId);
+        return ResultData.SUCCESS;
+    }
+
+    /**
+     * 新增问题
+     *
+     * @return
+     */
+    @PostMapping("")
+    public ResultData addFaqPair(@RequestBody FaqPair faqPair) throws IOException {
+        if (Objects.isNull(faqPair)){
+            throw new RuntimeException("参数异常");
+        }
+        managementService.addFaqPair(faqPair);
+        //同步到搜索引擎
+        try {
+            totalSynchronize();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResultData.SUCCESS;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResultData deleteFaqPair(@PathVariable Integer id){
+        managementService.deleteFaqPair(id);
+        //同步到搜索引擎
+        try {
+            totalSynchronize();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return ResultData.SUCCESS;
     }
 }

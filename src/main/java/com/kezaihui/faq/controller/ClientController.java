@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class ClientController {
     private static final int HTTP_SUCCESS_CODE = 0;
 
-    private static final String ROB_URL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=78339ff3-8da5-4af6-98b7-1132abef81cf";
+    private static final String ROB_URL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=a75bb517-058a-4328-872d-c0a9196192c7";
 
     @Autowired
     private Img2Base64Util img2Base64Util;

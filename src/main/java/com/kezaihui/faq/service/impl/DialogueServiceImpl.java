@@ -21,9 +21,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @Author: lerry_li
@@ -42,6 +44,29 @@ public class DialogueServiceImpl implements DialogueService {
 
     @Autowired
     private SimilarityService similarityService;
+
+    /**
+     * 可以扩展成词典，通过读文件缓存到内存中处理
+     */
+    private static final String[] FILTER_WORDS_DIC = new String[]{"你", "我", "他", "她", "它", "是", "1", "2", "3", "4", "5", "6", "7",
+            "8", "9", "0", "一个", "两个", "三个", "四个", "五个", "六个", "七个", "八个", "九个", "十个", "吗", "嘛", "啊", "哦", "的", "哇",
+            "呵", "吖", "呀", "额", "噢", "喔", "哈", "吧", "呢", "呐", "么"
+    };
+
+    /**
+     * 特殊符号过滤
+     */
+    private static final Pattern FILTER_REG_EX = Pattern.compile("\\pP|\\pS|\\s+");
+
+    private static String filterCommonWord(String question) {
+        for (String filerWords : FILTER_WORDS_DIC) {
+            if (question.contains(filerWords)) {
+                question = question.replaceAll(filerWords, " ");
+            }
+        }
+        question = FILTER_REG_EX.matcher(question).replaceAll(" ").trim();
+        return question;
+    }
 
 
     @Override
@@ -215,6 +240,11 @@ public class DialogueServiceImpl implements DialogueService {
         AnswerResultVo result = AnswerResultVo.builder()
                 .answerList(answers)
                 .build();
+        if (StringUtils.isEmpty(question)) {
+            return result;
+        }
+        //1.过滤通用词
+        question = filterCommonWord(question);
         //否则需要进行检索
         //2.检索
         List<RetrievalDataModel> retrievalDataModelList = retrievalService.searchSimilarQuestions(question);

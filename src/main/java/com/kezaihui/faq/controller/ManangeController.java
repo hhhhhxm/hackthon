@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/manange")
+@RequestMapping("/management")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Slf4j
 public class ManangeController {
@@ -27,7 +27,7 @@ public class ManangeController {
     private ManagementController managementController;
 
 
-    @GetMapping("/manange/{qaId}")
+    @GetMapping("/{qaId}")
     public ResultData<FaqPairDetailVo> getDetail(@PathVariable("qaId") Integer qaId) {
         FaqPair detail = faqPairDao.getDetail(qaId);
         if (Objects.isNull(detail)) {
@@ -41,11 +41,12 @@ public class ManangeController {
                         .inUse(detail.getInUse())
                         .creatorId(detail.getCreatorId())
                         .creatorName(detail.getCreatorName())
+                        .askCount(detail.getAskCount())
                         .build())
                 .build();
     }
 
-    @PutMapping("/manange/open/{qaId}")
+    @PutMapping("/open/{qaId}")
     public ResultData<FaqPairDetailVo> openDetail(@PathVariable("qaId") Integer qaId) {
         return transactionTemplate.execute(status -> changeInUse(qaId, true));
     }
@@ -66,7 +67,7 @@ public class ManangeController {
         return ResultData.<FaqPairDetailVo>success().build();
     }
 
-    @PutMapping("/manange/close/{qaId}")
+    @PutMapping("/close/{qaId}")
     public ResultData<FaqPairDetailVo> closeDetail(@PathVariable("qaId") Integer qaId) {
         return transactionTemplate.execute(status -> changeInUse(qaId, false));
     }

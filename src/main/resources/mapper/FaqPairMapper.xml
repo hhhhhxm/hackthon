@@ -11,6 +11,7 @@
         <result property="creatorName" column="creator_name" jdbcType="INTEGER"/>
         <result property="type" column="type" jdbcType="VARCHAR"/>
         <result property="inUse" column="in_use" jdbcType="BOOLEAN"/>
+        <result property="askCount" column="ask_count" jdbcType="INTEGER"/>
         <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
         <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -23,6 +24,7 @@
         `creator_name`,
         `type`,
         `in_use`,
+        `ask_count`,
         `created_at`,
         `updated_at`
     </sql>
@@ -35,6 +37,12 @@
         select * from faq_pair where id = #{qaId}
     </select>
 
+    <select id="getTopList" resultType="com.kezaihui.faq.entity.FaqPair">
+        select * from faq_pair where in_use = '1' order by ask_count desc limit 5
+    </select>
 
+    <update id="addCount">
+        update faq_pair set ask_count = ask_count +1 where id = #{faqId}
+    </update>
 </mapper>
 

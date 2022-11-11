@@ -8,6 +8,7 @@ import com.kezaihui.faq.vo.QuestionListVo;
 import com.kezaihui.faq.vo.QuestionVo;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Author: lerry_li
@@ -47,4 +48,8 @@ public interface ManagementService {
      * @param id
      */
     void deleteFaqPair(Integer id);
+
+    List<FaqPair> topList();
+
+    void addCount(Integer qaId);
 }

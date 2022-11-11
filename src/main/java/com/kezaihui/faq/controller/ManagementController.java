@@ -23,7 +23,7 @@ import java.util.List;
  * @Description
  */
 @RestController
-@RequestMapping("/dialogue/manage")
+@RequestMapping("/management")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")   //处理跨域请求
 @Slf4j
 public class ManagementController {
@@ -79,8 +79,8 @@ public class ManagementController {
 
 
     @PutMapping("/{qaId}")
-    public ResultData update(@RequestBody QuestionVo questionVo, @PathVariable Integer qaId){
-        managementService.update(questionVo,qaId);
+    public ResultData update(@RequestBody QuestionVo questionVo, @PathVariable Integer qaId) {
+        managementService.update(questionVo, qaId);
         return ResultData.SUCCESS;
     }
 
@@ -115,4 +115,18 @@ public class ManagementController {
         }
         return ResultData.SUCCESS;
     }
+
+    @GetMapping("/top_list")
+    public ResultData<List<FaqPair>> topList() {
+        List<FaqPair> faqPairs = managementService.topList();
+        return ResultData.<List<FaqPair>>success()
+                .data(faqPairs).build();
+    }
+
+    @PutMapping("/add/{qa_id}")
+    public ResultData addCount(@PathVariable("qa_id") Integer qaId) {
+        managementService.addCount(qaId);
+        return ResultData.SUCCESS;
+    }
+
 }

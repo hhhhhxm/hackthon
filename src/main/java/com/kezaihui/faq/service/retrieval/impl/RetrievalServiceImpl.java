@@ -83,7 +83,7 @@ public class RetrievalServiceImpl implements RetrievalService {
             float score = hit.getScore();
             Map<String, Object> sourceAsMap = hit.getSourceAsMap();
             RetrievalDataModel retrievalDataModel = new RetrievalDataModel();
-            retrievalDataModel.setId((Integer) sourceAsMap.get(id));
+            retrievalDataModel.setId((Integer) sourceAsMap.get("id"));
             retrievalDataModel.setRelevanceScore((double)score);
             retrievalDataModel.setStandardQuestion((String) sourceAsMap.get("standard_question"));
             retrievalDataModel.setTextValue((String) sourceAsMap.get("text_value"));

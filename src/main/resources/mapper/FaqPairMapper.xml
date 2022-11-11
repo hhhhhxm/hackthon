@@ -38,7 +38,7 @@
     </select>
 
     <select id="getTopList" resultType="com.kezaihui.faq.entity.FaqPair">
-        select * from faq_pair where in_use = '1' order by ask_count limit 5
+        select * from faq_pair where in_use = '1' order by ask_count desc limit 5
     </select>
 
     <update id="addCount">

@@ -61,6 +61,53 @@ public class ManagementServiceImpl implements ManagementService {
     @Autowired
     private RestClientUtil restClientUtil;
 
+    private String index = "{\n" +
+            "  \"settings\": {\n" +
+            "    \"number_of_shards\": 1,\n" +
+            "    \"analysis\": {\n" +
+            "      \"filter\": {\n" +
+            "        \"my_synonym_filter\": {\n" +
+            "          \"type\": \"synonym\",\n" +
+            "          \"updateable\": true,\n" +
+            "          \"synonyms_path\": \"analysis/synonym.txt\"\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"analyzer\": {\n" +
+            "        \"ik_synonym\": {\n" +
+            "          \"tokenizer\": \"ik_smart\",\n" +
+            "          \"filter\": [\n" +
+            "            \"my_synonym_filter\"\n" +
+            "          ]\n" +
+            "        },\n" +
+            "        \"ik_synonym_max\": {\n" +
+            "          \"tokenizer\": \"ik_max_word\",\n" +
+            "          \"filter\": [\n" +
+            "            \"my_synonym_filter\"\n" +
+            "          ]\n" +
+            "        }\n" +
+            "      }\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"mappings\": {\n" +
+            "    \"properties\": {\n" +
+            "      \"id\": {\n" +
+            "        \"type\": \"integer\"\n" +
+            "      },\n" +
+            "      \"standard_question\": {\n" +
+            "        \"type\": \"text\",\n" +
+            "        \"analyzer\": \"ik_synonym_max\",\n" +
+            "        \"search_analyzer\": \"ik_synonym_max\"\n" +
+            "      },\n" +
+            "      \"standard_answer\": {\n" +
+            "        \"type\": \"text\"\n" +
+            "      },\"in_use\": {\n" +
+            "        \"type\": \"boolean\"\n" +
+            "      },\"type\": {\n" +
+            "        \"type\": \"text\"\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
     @Override
     public int totalSynchronize(String tableIndexName) throws IOException {
@@ -82,8 +129,8 @@ public class ManagementServiceImpl implements ManagementService {
         //创建新索引
         CreateIndexRequest createIndexRequest = restClientUtil.getCreateIndexRequest(tableIndexName);
 
-        String jsonSource = readElasticsearchAPIJson(retrievalConfig.getIndex().getFaqPair(), "index");
-
+        //String jsonSource = readElasticsearchAPIJson(retrievalConfig.getIndex().getFaqPair(), "index");
+        String jsonSource = index;
         //index setting,mappings,7.0以上版本弃用_doc
         createIndexRequest.source(jsonSource, XContentType.JSON);
 
